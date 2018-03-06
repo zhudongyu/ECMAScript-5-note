@@ -129,7 +129,7 @@
 
     5.prototype与__proto__
         prototype 
-            @1.构造函数Function的一个属性，指向一个原型对象;
+            @1.构造函数Function的一个属性，指向一个原型对象;继承于Object的prototype
             @2.既然是一个原型对象,那么它也是Object的一个实例
         __proto__ 
             @1.每一个对象拥有的属性  
@@ -158,6 +158,20 @@
              实例:   new xx()  []     function  "xx"   123    true/false
 
              所以在  OBject.prototype.xxx上扩展方法，那么所有的对象都会拥有这个方法
+             例如:
+                Object.prototype.work = function(){
+                    console.log("我正在工作")
+                }
+                var str = "String"; 
+                    str.work(); // 输出: 我正在工作
+                var num = 10
+                    num.work(); // 输出: 我正在工作
+                var fn = function(){}
+                    fn.work();  // 输出: 我正在工作
+                var arr = []
+                    arr.work(); // 输出: 我正在工作
+                var bol = true
+                    bol.work(); // 输出: 我正在工作
              
         @3.对象的数据类型 ( 值:也就是实例 --> 对象 ) 
             Object  --> function Object (){...}
@@ -197,7 +211,54 @@
             3.我们都知道通过构造函数创建出的实例都是对象，所以我们就可以理解为什么
               在JS中我们会把一切都当做对象来处理
 
-    7.类(构造函数)之间的继承
+    7.原型链
+        <p align="center">
+            <img src="./yuanxinglian.JPG"/>
+        </p>
+        @1.
+            Function.prototype.x=function(){}
+            function fn(){
+
+            }
+            // 输出: f (){} 因为prototype是Function的一个属性，
+            console.log(Function.prototype) 
+            // 输出: f(){} 因为__proto__指向的是当前自身对象的构造函数关的原型联对象
+            // fn 的构造函数是Function，
+            console.log(fn.__proto__) 
+            // 输出: {Object..} fn这时是一个实例对象，那么它的原型对象，就是Object的一个实例对象
+            console.log(fn.prototype) 
+            // 输出Object fn.prototype是构造函数Object的实例对象，那么Object关联的原型对象就是{Object...}
+            console.log(fn.prototype.__proto__) 
+            
+            // 输出: f (){}; 这里的Object是函数，它的构造函数是Function,那么Function关联的原型对象
+            // 就是它的Prototype 
+            console.log(Object.__proto__)
+            // 输出: {Object...}
+            console.log(Object.prototype)
+            // 输出: null 原型链的终点
+            console.log(Object.prototype.__proto__)
+
+            console.log(Object.__proto__ === fn.__proto__) // true
+            console.log(Object.__proto__ === Function.prototype) // true
+
+        @2.
+            Object.prototype.a = function(){
+                console.log("aaaa")
+            }
+            Function.prototype.b = function(){
+                console.log("bbbb")
+            }
+            function fn(){
+
+            }
+            fn.a() // 输出: aaaa
+            fn.b() // 输出: bbbb
+
+            var f = new fn();
+            f.a() // 输出: aaaa
+            f.b() // 报错 f.b() is not a function
+
+    8.类(构造函数)之间的继承
         // Person 看做是父类
         function Person(name,age){
             this.name = name;
@@ -229,19 +290,6 @@
             也可以使用 for...in...的方法,遍历Person类原型对象的所有"可枚举属性",
             在赋值给Student类的原型。但是这样赋值行为极大的消耗了性能。
         */
-    8.原型链
-
-
-
-
-            function fn(){
-
-            }
-            console.log(fn.__proto__) // f (){}
-            console.log(fn.prototype) // 
-            console.log(Function.prototype)
-            console.log(Object.__proto__)
-            console.log(Object.prototype)
 
 
 ```
