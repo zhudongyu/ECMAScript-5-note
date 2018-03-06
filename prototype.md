@@ -212,9 +212,7 @@
               在JS中我们会把一切都当做对象来处理
 
     7.原型链
-        <p align="center">
-            <img src="./yuanxinglian.JPG"/>
-        </p>
+        ![](https://github.com/zhudongyu/ECMAScript-5-note/raw/master/yuanxinglian.JPG)
         @1.
             Function.prototype.x=function(){}
             function fn(){
