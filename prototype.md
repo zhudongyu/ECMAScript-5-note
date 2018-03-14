@@ -24,8 +24,10 @@
         xiaoming.吃() 
     2.对象是怎么来的 --> 由类(构造函数)实例化得来的
     3.不存在独立的 属性/函数(方法) --> 都必须是某个对象的 属性/方法 
-    4.JavaScript 是没有继承的概念的，继承可以看做是访问权限    
-    5.先有类 后有对象，我们不能操作类，只能操作类的实例化对象。
+    4.对象中的属性和方法的来源 --> 继承和自身的扩展,因为JS是基于原型构建的面向对象
+    5.对象的检索机制 --> 先找自己在找原型
+    6.JavaScript 是没有继承的概念的，继承可以看做是访问权限    
+    7.先有类 后有对象，我们不能操作类，只能操作类的实例化对象。
       通过关键字new实例化，那么此时的实例对象就继承了该类的所有封装的属性和方法
 
 (3).prototype 原型编程语言的 基本规则
@@ -131,6 +133,8 @@
         prototype 
             @1.构造函数Function的一个属性，指向一个原型对象;继承于Object的prototype
             @2.既然是一个原型对象,那么它也是Object的一个实例
+            @3.当我们忘记了对象有什么属性和方法时,可以通过访问其构造函数的原型对象来查看
+               比如忘记了String上的方法,String.prototype就可以查看了
         __proto__ 
             @1.每一个对象拥有的属性  
             @2.指向的是当前对象自身构造函数关联的原型对象
@@ -212,7 +216,9 @@
               在JS中我们会把一切都当做对象来处理
 
     7.原型链
-        ![](https://github.com/zhudongyu/ECMAScript-5-note/raw/master/yuanxinglian.JPG)
+        <p align="center">
+            <img src="./yuanxinglian.JPG"/>
+        </p>
         @1.
             Function.prototype.x=function(){}
             function fn(){
@@ -288,6 +294,50 @@
             也可以使用 for...in...的方法,遍历Person类原型对象的所有"可枚举属性",
             在赋值给Student类的原型。但是这样赋值行为极大的消耗了性能。
         */
+    9.类的扩展方法extends封装
+        @1.类(构造函数)是Function的实例对象，那么肯定也会继承Function的原型对象
+            Function.prototype.extends = function(func,options){
+                this.prototype = new func(); //
+                for(var key in options){
+                    this.prototype[key] = options[key]
+                }
+            }
+            // 声明Person类
+            function Person(name,age){
+                this.name = name;
+                this.age = age;
+            }
+            Person.prototype = {
+                eat : function(){
+                    console.log(this.name + "正在吃饭")
+                },
+                dirnk : function(){
+                    console.log(this.name + "正在喝水")
+                },
+            }
+            // 声明Student类
+            function Student(name){
+                this.name = name
+            }
+            // Student类扩展并继承Person类
+            Student.extends(Person,{
+                aa : function(){
+                    console.log("aaaa")
+                }
+            })
+
+            var ddy = new Student("ddy")
+                ddy.eat() // ddy 正在吃饭
+                ddy.aa()  // aaaa
+
+```
+```JavaScript
+// 依赖插件开发
+(function(window,factory,pluginName){
+    factory(pluginName);
+})(this,function(pluginName){
+    console.log(pluginName)
+},"pluginName")
 
 
 ```

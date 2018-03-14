@@ -35,11 +35,11 @@
         │-——--——--——--——--——--——--——--——--——--——--——--——--——--——--——--——--——--——--——--——--——--——--|
 
 (3)语言执行规则
-    1.按照从上往下的加载顺序规则，先定义后执行
-        @1.从上往下
-        @2.先定义后执行
-           --定义代码：var 变量，function函数
-           --执行代码：除了定义代码其余都是执行代码
+    1.执行规则
+        从上往下 -> 先定义（变量var、函数->函数式声明）
+        从上往下 -> 后执行 除了定义代码其余都是执行代码
+        赋值操作 -> 从右往左
+        .运算符优先于赋值操作 
     2.举例说明：
         @1.执行下面代码：
            console.log(a);  // 输出undefined
@@ -60,6 +60,23 @@
                 var a = 1 // step_4: 定义变量 a; step_6: 将数字1赋值给变量 a;
             }
             console.log(a) // step_9: 输出：Object , 等同于console.log(window.a)
+        @4.
+            var a = {n:1}
+            a.x = b = {n:2}
+            console.log(b) // {n:2}
+            console.log(a.x) // {n:2}
+            b.n = 10
+            console.log(b) // {n:10}
+            console.log(a.x) // {n:10}
+        @5.
+            var a = {n : 1}
+            a.x = a = {n : 2} 
+            console.log(a.x)  // undefined
+        @6.
+            var a = {name:b}
+            var b = {name:a}
+            console.log(a) // {name:undefined}
+            console.log(b) // {name:{name:undefined}}
     3.明白了JS的执行规则，那么问题来了，为什么会这么执行？
         因为这一切都是由内存机制主导的
         -- 先开辟内存空间
@@ -131,4 +148,10 @@
     console.log(jQuery) // f jQuery(){...}
     $("#abc") // ID 选择
 
+(8).break 和 continue
+    break 语句用于跳出循环。
+    continue 用于跳过循环中的一个迭代。
+    break 和 continue 语句的不同之处
+    break 语句可以立即退出循环，阻止再次反复执行任何代码。
+    而 continue 语句只是退出当前循环，根据控制表达式还允许继续进行下一次循环。
 ```

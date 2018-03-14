@@ -17,6 +17,7 @@
     -- 基本数据类型 ：String Number Boolean undefined 
 
     -- 特殊的基本数据类型：null
+       null --> false !!null --> false !null --> true
 
     null 与 undefined 的区别
         1.相同点：他们只有一个值，就是他们自身
@@ -52,6 +53,7 @@
                     var b = null;
                     console.log(a == b) // true
                 @2.作为原型链的终点：参考后面的原型链
+
 
 
     -- 引用数据类型：只有一种 Object
