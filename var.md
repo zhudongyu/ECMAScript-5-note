@@ -65,7 +65,7 @@
 (3).变量的 就近原则/作用域链/生命周期？
 
     1.就近原则 -> 会先在自身所在作用域进行检索，找到后进行输出，
-    2.作用域链 -> 找不到会向上冒泡直到找到对应的变量 自底向上的原则
+    2.作用域链 -> 找不到会向上冒泡直到找到对应的变量 自底向上的原则，最顶层作用域链是全局对象window
 ```javaScript
 var a = 10,b = 5;
 function fn() {
@@ -176,7 +176,7 @@ var fn = function(){
           显而易见你会先看下小碗，因为你看一眼就能得出结论了，有的话就找到了，没有的话再去大水缸里去找。
           人的思维都这么聪明，何况人开发出的程序呢，
 
-(5).再次深入理解 JS 的运行规则
+(5).再次深入理解 JS 的运行规则 之 变量对象
 
 ```javaScript
 fn()               // step_3: 执行函数fn  
@@ -188,6 +188,20 @@ function fn () {   // step_2: 定义函数fn
 }
 console.log(a)     // step_9: 输出：Object , 等同于console.log(window.a)
 
+```
+```javaScript
+function foo() {
+    console.log(a);
+    a = 1;
+}
+
+foo(); // Uncaught ReferenceError: a is not defined 因为 执行console的时候 a 没有用var 定义。
+
+function bar() {
+    a = 1;
+    console.log(a);
+}
+bar(); // 1  执行 console 的时候，全局对象已经被赋予了 a 属性，这时候就可以从全局找到 a 的值，所以会打印 1。
 ```
 
 > 四、运算符 -> 比较运算符 ==、=== 
