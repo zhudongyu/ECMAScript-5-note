@@ -16,47 +16,10 @@
 * [以正确的姿势挥舞 this](./this.md)
 * [基于 prototype 原型构建的面向对象系统、原型链探索](./prototype.md)
 * [正视 JS 中`类与类`的继承](./类与类见的继承.md)
+* [javaScript的垃圾回收机制和内存泄漏](./javaScript的垃圾回收机制和内存泄漏.md)
 * [正则 RegExp 模板引擎及模板替换](./正则.md)
 * [日期操作大全](./日期操作大全.md)
 * [双向数据绑定原理分析及实现](./双向数据绑定原理分析及实现.md)
 * [数据校验插件开发](./数据校验插件开发.md)
 * [javaScript 设计模式](./javaScript设计模式.md)
-* [javaScript的垃圾回收机制和内存泄漏](./javaScript的垃圾回收机制和内存泄漏.md)
 
-
-> 函数的执行规则
-```javascript
-1.调用一个函数的时候,首先会根据名称去栈中查找这个变量，如果这个变量的引用是函数就执行，不是函数就报错！
-2.如果在栈中没有找到这个变量或者变量的值为undefined，就会去堆中查找函数式声明的函数，找到并执行
-
-
-1.
-var fn = function（）{
-    console.log(2)
-}
-function fn(){
-    console.log(1)
-}
-fn(); // 2
-
-2.
-fn()  // 1
-var fn = 1;
-function fn (){
-    console.log(1)
-}
-fn() // TypeError: fn is not a function
-
-```
-
-
-```JavaScript
-// 依赖插件开发
-(function(window,factory,pluginName){
-    factory(pluginName);
-})(this,function(pluginName){
-    console.log(pluginName)
-},"pluginName")
-
-
-```
