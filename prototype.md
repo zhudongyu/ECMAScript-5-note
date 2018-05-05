@@ -4,14 +4,14 @@
 
 ### 一、JavaScript 语言设计思路及原理 
 
-> 好东西都是最先看起来枯燥的
+>好东西都是最先看起来枯燥的
 
-(1) 都是借鉴来的
+(1) 都是借鉴来的
 
-    1.C语言的基本语法
+    1. C语言的基本语法
     2. JAVA的数据类型 和 内存管理
-    3.scheme的函数提升“第一等公民”
-    4.prototype的继承机制
+    3. scheme的函数提升“第一等公民”
+    4. prototype的继承机制
 
 (2) JavaScript组成
 
@@ -66,10 +66,33 @@
     2.对象会记住他的原型 
     3.当请求访问对象的某个方法，无法响应时，会把这个请求委托给他自己的原型  =>  原型链
 
+(7) prototype与__proto__
 
+    prototype 
+        1.构造函数Function的一个属性，指向一个原型对象,
+        2.既然是一个原型对象,那么它也是Object的一个实例 ,所以`继承`于Object的prototype
+        
+    __proto__ 
+        1.每一个`实例对象`拥有的属性  
+        2.指向的是当前`实例对象`自身构造函数关联的原型对象
+
+    所以当我们忘记了对象有什么属性和方法时,有两个办法可以解决,比如忘记了String上的方法
+
+    首先可以通过访问其构造函数的原型对象来查看
+```js
+String.prototype
+// String {"", length: 0, constructor: ƒ, anchor: ƒ, big: ƒ, blink: ƒ, …}
+```
+    其次可以通过该实例对象的 __proto__ 来查看
+```js
+"ddy".__proto__ 
+// String {"", length: 0, constructor: ƒ, anchor: ƒ, big: ƒ, blink: ƒ, …}
+```
+
+    
 ### 二、JS 中的构造函数
 
-> 原型及原型链的前哨，站好每一班岗
+>原型及原型链的前哨，站好每一班岗
 
 (1) 什么是构造函数?
 
@@ -94,7 +117,7 @@ Person.prototype = {
     }
 }
 // 3.实例化对象
-var ddy = new Person()
+var ddy = new Person()
 
 // 4.访问构造函数内属性和方法顺序
 // 4.1 先在构造函数内部去找
@@ -143,9 +166,9 @@ Person.prototype = {
 
 ### 三、深入理解原型到原型链
 
-> 擦亮眼睛，重头戏来了
+>擦亮眼睛，重头戏来了
 
-> 让你真正的理解构造函数的实例的原型，原型的原型，原型的原型的原型是什么
+>让你真正的理解构造函数的实例的原型，原型的原型，原型的原型的原型是什么
 
 (1) 使用构造函数创建一个对象
 
@@ -207,11 +230,13 @@ console.log(person.__proto__ === Person.prototype); // true
 ![实例与实例原型的关系图](https://github.com/mqyqingfeng/Blog/raw/master/Images/prototype2.png)
 
     
-(4) constructor
+(4) constructor 属性：**所有对象都拥有的一个属性,返回创建此对象的构造器**
 
     既然实例对象和构造函数都可以指向原型，那么原型是否有属性指向构造函数或者实例呢？
 
-    指向实例倒是没有，因为一个构造函数可以生成多个实例，但是原型指向构造函数倒是有的，每个原型都有一个 constructor 属性指向关联的构造函数。
+    指向实例倒是没有，因为一个构造函数可以生成多个实例，但是原型指向构造函数倒是有的.
+    
+    每个原型都`默认`有一个 constructor 属性指向关联的构造函数。
 
     为了验证这一点，我们可以尝试：
 
@@ -221,6 +246,7 @@ function Person() {
 }
 console.log(Person === Person.prototype.constructor); // true
 ```
+
 
     所以再更新下关系图：
 
@@ -241,6 +267,12 @@ console.log(Person.prototype.constructor == Person) // true
 console.log(Object.getPrototypeOf(person) === Person.prototype) // true
 ```
 
+    那么其实 当创建了构造函数 Person 的时候就默认生成了它的原型，其长相为：
+```js
+Person.prototype = {
+    constructor : Person
+}
+```
     
 (5) 实例与原型的关系
 
@@ -267,7 +299,8 @@ console.log(person.name) // donyk
 
     在这个例子中，我们给实例对象 person 添加了 name 属性，当我们打印 person.name 的时候，结果自然为 ddy
 
-    但是当我们删除了 person 的 name 属性时，读取 person.name，从 person 对象中找不到 name 属性就会从 person 的原型也就是 person.__proto__ ，也就是 Person.prototype中查找，幸运的是我们找到了  name 属性，结果为 donyk
+    但是当我们删除了 person 的 name 属性时，读取 person.name，从 person 对象中找不到 name 属性就会从 person 的原型
+    也就是 person.__proto__ ，也就是 Person.prototype中查找，幸运的是我们找到了  name 属性，结果为 donyk
 
 
 
@@ -308,11 +341,9 @@ console.log(Object.prototype.__proto__ === null) // true
 
     图中由相互关联的原型组成的链状结构就是原型链，也就是蓝色的这条线。
 
-(8) 补充
+## 四、补充和再深入
 
-    最后，补充三点大家可能不会注意的地方：
-
-    1.constructor
+(1) constructor
 
 ```js
 function Person() {
@@ -321,21 +352,56 @@ function Person() {
 var person = new Person();
 console.log(person.constructor === Person); // true
 ```
-    当获取 person.constructor 时，其实 person 中并没有 constructor 属性,当不能读取到constructor 属性时，会从 person 的原型也就是 Person.prototype 中读取，正好原型中有该属性，所以：
+    当获取 person.constructor 时，其实 person 中并没有 constructor 属性,当不能读取到 constructor 属性时，会从 person 的原型也就是 Person.prototype 中读取，正好原型中有该属性，所以：
 
 ```js
 person.constructor === Person.prototype.constructor
 ```
 
-    2.__proto__
+    1.Person 的构造器
+```js
+// 虽然 Person 是构造函数，但同时它也是 Function 的实例对象，所以 Person 的构造器是 Function
+console.log(Person.constructor) // f Function(){}
+```
 
-    __proto__ 绝大部分浏览器都支持这个非标准的方法访问原型，然而它并不存在于 Person.prototype 中，实际上，它是来自于 Object.prototype ，与其说是一个属性，不如说是一个 getter/setter，当使用 obj.__proto__ 时，可以理解成返回了 Object.getPrototypeOf(obj)。
+    2.Person 实例的构造器
 
+```js
+var ddy1 = new Person();
+console.log(ddy1.constructor); // 输出:function Person(){}
+```   
 
+    3.Person 的原型对象的构造器
+        
+```js
+// 默认时
+Person.prototype = {
+    constructor : Person
+    ...
+}
+console.log(Person.prototype.constructor) // Person
+var ddy1 = new Person()
+console.log(ddy1.constructor) // Person
 
+// 但有时我们会写成
+Person.prototype = {
+    ...
+}
+// 因为这时 Person 的原型对象丢失 constructor 属性，这个原型对象就只是 Object 的一个实例，
+// 所以它的构造函数指向了 Object
+console.log(Person.prototype.constructor) // 输出 f Object(){}
+var ddy2 = new Person();
+// 因为上面上面将它的原型指向了{}丢失 constructor 属性，
+console.log(ddy2.constructor); // 输出 f Object(){}
+```
+       
+(2) __proto__
+   
+    __proto__ 绝大部分浏览器都支持这个非标准的方法访问原型，然而它并不存在于 Person.prototype 中
 
+    实际上，它是来自于 Object.prototype ，与其说是一个属性，不如说是一个 getter/setter
 
-
+    当使用 obj.__proto__ 时，可以理解成返回了 Object.getPrototypeOf(obj)
 
 
 
@@ -354,26 +420,9 @@ person.constructor === Person.prototype.constructor
 
 ```JavaScript
 
-    
-   
-      
-
-
- 5.prototype与__proto__
-        prototype 
-            @1.构造函数Function的一个属性，指向一个原型对象;继承于Object的prototype
-            @2.既然是一个原型对象,那么它也是Object的一个实例
-            @3.当我们忘记了对象有什么属性和方法时,可以通过访问其构造函数的原型对象来查看
-               比如忘记了String上的方法,String.prototype就可以查看了
-        __proto__ 
-            @1.每一个对象拥有的属性  
-            @2.指向的是当前对象自身构造函数关联的原型对象
-
 
     7.原型链
-        <p align="center">
-            <img src="./yuanxinglian.JPG"/>
-        </p>
+       
         @1.
             Function.prototype.x=function(){}
             function fn(){
@@ -417,27 +466,7 @@ person.constructor === Person.prototype.constructor
             f.a() // 输出: aaaa
             f.b() // 报错 f.b() is not a function
       
-    4.构造器->constructor 属性：**所有对象都拥有的一个属性,返回创建此对象的构造器**
-        function Person() {
-
-        }
-        // 1.Person 的构造器
-        console.log(Person.constructor) // f Function(){}
-        // 2. Person实例ddy1的构造器
-        var ddy1 = new Person();
-        console.log(ddy1.constructor); // 输出:function Person(){}
-        // 3. Person的原型对象的构造器
-        Person.prototype = {
-
-        }
-        console.log(Person.prototype.constructor) // 输出 f Object(){}
-        // 4. 拥有原型的Person的实例的构造器
-        var ddy2 = new Person();
-        console.log(ddy2.constructor); // 输出 f Object(){};因为上面上面将它的原型指向了{}
-        // 5. 更改Person原型对象的构造器指向后Person实例的构造器
-        Person.prototype.constructor = Person;
-        var ddy3 = new Person();
-        console.log(ddy3.constructor) // 输出 function Person(){}
+   
 
    
 
