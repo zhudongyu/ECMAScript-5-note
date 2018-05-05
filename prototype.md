@@ -92,7 +92,7 @@ String.prototype
     
 ### 二、JS 中的构造函数
 
->原型及原型链的前哨，站好每一班岗
+>原型及原型链的前哨，站好每一班岗
 
 (1) 什么是构造函数?
 
@@ -168,7 +168,7 @@ Person.prototype = {
 
 >擦亮眼睛，重头戏来了
 
->让你真正的理解构造函数的实例的原型，原型的原型，原型的原型的原型是什么
+>让你真正的理解构造函数的实例的原型，原型的原型，原型的原型的原型是什么
 
 (1) 使用构造函数创建一个对象
 
@@ -312,8 +312,8 @@ console.log(person.name) // donyk
 
 ```js
 var obj = new Object();
-obj.name = 'Kevin'
-console.log(obj.name) // Kevin
+obj.name = 'donyk'
+console.log(obj.name) // donyk
 ```
 
     所以原型对象是通过 Object 构造函数生成的，结合前面所说，实例的 __proto__ 指向构造函数的 prototype ，所以我们再更新下关系图：
@@ -343,7 +343,7 @@ console.log(Object.prototype.__proto__ === null) // true
 
 ## 四、补充和再深入
 
-(1) constructor
+(1) constructor
 
 ```js
 function Person() {
@@ -360,7 +360,7 @@ person.constructor === Person.prototype.constructor
 
     1.Person 的构造器
 ```js
-// 虽然 Person 是构造函数，但同时它也是 Function 的实例对象，所以 Person 的构造器是 Function
+// 虽然 Person 是构造函数，但同时它也是 Function 的实例对象，所以 Person 的构造器是 Function
 console.log(Person.constructor) // f Function(){}
 ```
 
@@ -387,7 +387,7 @@ console.log(ddy1.constructor) // Person
 Person.prototype = {
     ...
 }
-// 因为这时 Person 的原型对象丢失 constructor 属性，这个原型对象就只是 Object 的一个实例，
+// 因为这时 Person 的原型对象丢失 constructor 属性，这个原型对象就只是 Object 的一个实例，
 // 所以它的构造函数指向了 Object
 console.log(Person.prototype.constructor) // 输出 f Object(){}
 var ddy2 = new Person();
@@ -402,249 +402,3 @@ console.log(ddy2.constructor); // 输出 f Object(){}
     实际上，它是来自于 Object.prototype ，与其说是一个属性，不如说是一个 getter/setter
 
     当使用 obj.__proto__ 时，可以理解成返回了 Object.getPrototypeOf(obj)
-
-
-
-
-
-
-
-
-
-(7) 基于原型构建的面向对象系统
-
-
-
-
-
-
-```JavaScript
-
-
-    7.原型链
-       
-        @1.
-            Function.prototype.x=function(){}
-            function fn(){
-
-            }
-            // 输出: f (){} 因为prototype是Function的一个属性，
-            console.log(Function.prototype) 
-            // 输出: f(){} 因为__proto__指向的是当前自身对象的构造函数关的原型联对象
-            // fn 的构造函数是Function，
-            console.log(fn.__proto__) 
-            // 输出: {Object..} fn这时是一个实例对象，那么它的原型对象，就是Object的一个实例对象
-            console.log(fn.prototype) 
-            // 输出Object fn.prototype是构造函数Object的实例对象，那么Object关联的原型对象就是{Object...}
-            console.log(fn.prototype.__proto__) 
-            
-            // 输出: f (){}; 这里的Object是函数，它的构造函数是Function,那么Function关联的原型对象
-            // 就是它的Prototype 
-            console.log(Object.__proto__)
-            // 输出: {Object...}
-            console.log(Object.prototype)
-            // 输出: null 原型链的终点
-            console.log(Object.prototype.__proto__)
-
-            console.log(Object.__proto__ === fn.__proto__) // true
-            console.log(Object.__proto__ === Function.prototype) // true
-
-        @2.
-            Object.prototype.a = function(){
-                console.log("aaaa")
-            }
-            Function.prototype.b = function(){
-                console.log("bbbb")
-            }
-            function fn(){
-
-            }
-            fn.a() // 输出: aaaa
-            fn.b() // 输出: bbbb
-
-            var f = new fn();
-            f.a() // 输出: aaaa
-            f.b() // 报错 f.b() is not a function
-      
-   
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    6.基类与派生类 --> 派生类继承与基类
-        @1.通过父类和子类理解下
-            父类: 
-                  动物类 {
-                        属性: 大脑、消化、温度
-                  }
-            子类：
-                  人类 {
-                        属性: 名字、年龄、性别
-                  }
-                  var ddy = new 人类();
-                  // 这里毋庸置疑 肯定输出人类属性中的名字
-                  console.log(ddy.名字)
-                  // 那么这里 也会输出动物类属性中的大脑，因为子类继承与父类，
-                  console.log(ddy.大脑) 
-            然而在JavaScript中 基类就等同于父类，派生类就等同于子类
-
-        @2.JavaScript中的内置结构为
-             基类:   Object
-             派生类: 构造函数   Array  Function  String Number Boolean ...
-             实例:   new xx()  []     function  "xx"   123    true/false
-
-             所以在  OBject.prototype.xxx上扩展方法，那么所有的对象都会拥有这个方法
-             例如:
-                Object.prototype.work = function(){
-                    console.log("我正在工作")
-                }
-                var str = "String"; 
-                    str.work(); // 输出: 我正在工作
-                var num = 10
-                    num.work(); // 输出: 我正在工作
-                var fn = function(){}
-                    fn.work();  // 输出: 我正在工作
-                var arr = []
-                    arr.work(); // 输出: 我正在工作
-                var bol = true
-                    bol.work(); // 输出: 我正在工作
-             
-        @3.对象的数据类型 ( 值:也就是实例 --> 对象 ) 
-            Object  --> function Object (){...}
-            创建实例：
-                1.字面量   --> {}
-                2.构造函数 --> new Object() 
-            Array  --> function Array (){...}
-            创建实例：
-                1.字面量   --> []
-                2.构造函数 --> new Array() 
-            function  --> function Function (){...}
-            创建实例：
-                1.字面量   --> function(){}
-                2.构造函数 --> new Function()
-            String  --> function String (){...}
-            创建实例：
-                1.字面量   --> "abc"
-                2.构造函数 --> new String()    
-            Number  --> function Number (){...}
-            创建实例：
-                1.字面量   --> 123
-                2.构造函数 --> new Number()   
-            Boolean --> function Boolean (){...}
-            创建实例：
-                1.字面量   --> true / false
-                2.构造函数 --> new Boolean()
-
-            通过上面可以看出:
-            1.每个数据类型都对应着自己的构造函数
-            2.每个数据类型创建实例的方式都有两种 字面量和构造函数，而且这两种方式是等同的,
-              因为这两种方式创建的实例都拥有相同的属性和方法
-                var a = {}
-                var b = new Object()
-                console.log(a)
-                console.log(b)
-                通过这串代码运行的结果可以看出 输出的 a和b 拥有完全相同的属性跟方法(__proto__)
-            3.我们都知道通过构造函数创建出的实例都是对象，所以我们就可以理解为什么
-              在JS中我们会把一切都当做对象来处理
-
-
-    8.类(构造函数)之间的继承
-        // Person 看做是父类
-        function Person(name,age){
-            this.name = name;
-            this.age = age;
-        }
-        Person.prototype = {
-            eat : function(){
-                console.log(this.name + "正在吃饭")
-            },
-            dirnk : function(){
-                console.log(this.name + "正在喝水")
-            },
-        }
-        // Student 看做是子类
-        function Student(name,age){
-            // 更改Person中this指向为Student,否则指向的就是window
-            Person.call(this,name,age)
-        }
-        // 1.因为Person类的实例具有对其原型的访问权限
-        // 2.所以将Student类的原型指向Person的实例
-        // 3.那么Student类的实例爬着原型链就能访问到Person的原型对象
-        Student.prototype = new Person();
-        Student.prototype.school = function(){
-            console.log(this.name + "正在上学")
-        }
-        var Alice = new Student("Alice",18);
-        Alice.school(); // 输出: Alice 正在上学
-        /*
-            也可以使用 for...in...的方法,遍历Person类原型对象的所有"可枚举属性",
-            在赋值给Student类的原型。但是这样赋值行为极大的消耗了性能。
-        */
-    9.类的扩展方法extends封装
-        @1.类(构造函数)是Function的实例对象，那么肯定也会继承Function的原型对象
-            Function.prototype.extends = function(func,options){
-                this.prototype = new func(); //
-                for(var key in options){
-                    this.prototype[key] = options[key]
-                }
-            }
-            // 声明Person类
-            function Person(name,age){
-                this.name = name;
-                this.age = age;
-            }
-            Person.prototype = {
-                eat : function(){
-                    console.log(this.name + "正在吃饭")
-                },
-                dirnk : function(){
-                    console.log(this.name + "正在喝水")
-                },
-            }
-            // 声明Student类
-            function Student(name){
-                this.name = name
-            }
-            // Student类扩展并继承Person类
-            Student.extends(Person,{
-                aa : function(){
-                    console.log("aaaa")
-                }
-            })
-
-            var ddy = new Student("ddy")
-                ddy.eat() // ddy 正在吃饭
-                ddy.aa()  // aaaa
-
-```
-```JavaScript
-// 依赖插件开发
-(function(window,factory,pluginName){
-    factory(pluginName);
-})(this,function(pluginName){
-    console.log(pluginName)
-},"pluginName")
-
-
-```
